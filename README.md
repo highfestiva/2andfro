@@ -29,7 +29,48 @@ The code size is pretty small and should be fairly easy to grasp. Back-end parti
 lines of Python code, front-end JavaScript which handles loading and mouse circling is 144
 lines of code. HTML 35 lines, CSS 84.
 
-Some scalability data:
+To run partitioning and view result, do like so:
+
+```bash
+$ git clone git@github.com:highfestiva/2andfro.git
+Cloning into '2andfro'...
+remote: Counting objects: 11, done.
+remote: Compressing objects: 100% (10/10), done.
+Receiving objects: 100% (11/11)    11 (delta 0), pack-reused 0 eceiving objects:  90% (10/11)
+Receiving objects: 100% (11/11), 132.11 KiB | 0 bytes/s, done.
+Checking connectivity... done.
+
+$ cd 2andfro/
+
+$ git submodule init
+Submodule 'kazaamtree' (https://github.com/highfestiva/kazaamtree.git) registered for path 'kazaamtree'
+
+$ git submodule update
+Cloning into 'C:/RnD/lang/JavaScript/apa/kazaamtree'...
+remote: Counting objects: 21, done.
+remote: Compressing objects: 100% (3/3), done.
+remote: Total 21 (delta 0), reused 0 (delta 0), pack-reused 17
+Unpacking objects: 100% (21/21), done.
+Checking connectivity... done.
+Submodule path 'kazaamtree': checked out 'bd0e073cd1a409609b2bfe0317f9996bba9e7f6e'
+
+$ ./partition_crds.py --input ../data/some_ppl.csv --output-a a.json --output-b b.json --min-chunk-size 500
+Buffering input A/B coordinates...
+Complete input CSV is buffered. Partitioning coordinates...
+Chunk-indexing A containing 99999 coordinates...
+Chunk-indexing B containing 99999 coordinates...
+Writing A JSON containing 128 chunks...
+Writing B JSON containing 128 chunks...
+Both output files written. Done. Data bandwidth reduced by 97%.
+
+$ python3 -m http.server
+Serving HTTP on 0.0.0.0 port 8000 ...
+
+[Open your browser towards localhost:8000.]
+```
+
+
+## Scalability notes:
 
  * Back-end genration of JSON chunks from 1M A/B coordinates takes 33 seconds on my machine
    and should be fairly linear due to the O(log(N)) complexity of the [spatial partitioning
@@ -38,7 +79,7 @@ Some scalability data:
    coordinates.
  * Loading the whole 1M page is linear and takes less than four seconds in my browser.
  * When 1M A/B coordinates are loaded in my browser, it takes up ~270 MB of RAM. Each
-   coordinate seems to take up approximately 200 bytes on the browser.
+   coordinate seems to take up approximately 200 bytes of RAM in the browser.
  * Showing the result, i.e. the corresponding chunks is linear to to the number of chunks and
    the complexity of the polycon drawn with the mouse. 1M coordinates with a minimum chunk
    size of 50 coordinates typically results in an average chunk size of 70 coordinates, which

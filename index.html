@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>2andfro</title>
+    <link rel="stylesheet" type="text/css" href="2andfro.css">
+  </head>
+
+  <body>
+    <div id="map"></div>
+    <div class="direction">
+      <div class="switch">
+        <input type="radio" class="switch-input" name="view" value="a2b" id="a2b" checked>
+        <label for="a2b" class="switch-label switch-label-off">Home</label>
+        <input type="radio" class="switch-input" name="view" value="b2a" id="b2a">
+        <label for="b2a" class="switch-label switch-label-on">Work</label>
+        <span class="switch-selection"></span>
+      </div>
+    </div>
+    <div class="whodunnit">
+      <div>2016 <a href="mailto:info@pixeldoctrine.com">Jonas</a></div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script>
+      var mapLat = 18.55;
+      var mapLng = -72.27;
+      var mapZoom = 11;
+      var heatmapRadius = 20;
+    </script>
+    <script src="2andfro.js"></script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDM6irdE5CKBVVbZOIniJ1ulWEJIK44FfY&libraries=visualization&callback=initMap">
+    </script>
+  </body>
+</html>

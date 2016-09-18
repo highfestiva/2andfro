@@ -1,0 +1,3 @@
+[submodule "kazaamtree"]
+	path = kazaamtree
+	url = https://github.com/highfestiva/kazaamtree.git

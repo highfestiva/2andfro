@@ -86,7 +86,7 @@ def partition_crds_fname(inputcsv_fname, a_json_fname, b_json_fname, min_chunk_s
 if __name__ == '__main__':
 	from argparse import ArgumentParser, FileType
 	parser = ArgumentParser()
-	parser.add_argument('--input', type=FileType('r'), default=open('one_million_users.csv'), help="input comma-separated CSV file")
+	parser.add_argument('--input', type=FileType('r'), default='one_million_users.csv', help="input comma-separated CSV file")
 	parser.add_argument('--output-a', type=FileType('w'), default='a.json', help="output JSON file for A coordinates")
 	parser.add_argument('--output-b', type=FileType('w'), default='b.json', help="output JSON file for B coordinates")
 	parser.add_argument('--min-chunk-size', type=int, default=100, help="minimum number of coordinates to allow per chunk")

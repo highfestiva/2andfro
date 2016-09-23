@@ -59,21 +59,23 @@ function showTargets(poly, heatmap, a, b) {
         if (refIdx in refCounts) {
           refCounts[refIdx] += refs[refIdx];
         } else {
-          refCounts[refIdx] = 1;
+          refCounts[refIdx] = refs[refIdx];
         }
       }
     }
   }
   for (var refIdx in refCounts) {
-    var refCnt = refCounts[refIdx]
+    var refCnt = refCounts[refIdx];
     heatmapData.push({location: b[refIdx], weight: refCnt});
   }
+
+  setLegendLabels();
 }
 
 function userPickArea(map, heatmap) {
   var button = 1;
   google.maps.event.addDomListener(document.getElementById("map"), 'mousedown', function(e) {
-      button = e.button;
+      button = +!e.ctrlKey;
       return false;
     }, capture=true);
   var mouseMoveHandler = null;
@@ -126,6 +128,78 @@ $(document).ready(function() {
     });
 });
 
+function setGradient() {
+  gradient = [
+    'rgba(0, 255, 255, 0)',
+    'rgba(0, 255, 255, 1)',
+    'rgba(0, 191, 255, 1)',
+    'rgba(0, 127, 255, 1)',
+    'rgba(0, 63, 255, 1)',
+    'rgba(0, 0, 255, 1)',
+    'rgba(0, 0, 223, 1)',
+    'rgba(0, 0, 191, 1)',
+    'rgba(0, 0, 159, 1)',
+    'rgba(0, 0, 127, 1)',
+    'rgba(63, 0, 91, 1)',
+    'rgba(127, 0, 63, 1)',
+    'rgba(191, 0, 31, 1)',
+    'rgba(255, 0, 0, 1)'
+  ]
+  heatmap.set('gradient', gradient);
+}
+
+function setLegendGradient() {
+    var gradientCss = '(left';
+    for (var i = 0; i < gradient.length; ++i) {
+        gradientCss += ', ' + gradient[i];
+    }
+    gradientCss += ')';
+
+    $('#legendGradient').css('background', '-webkit-linear-gradient' + gradientCss);
+    $('#legendGradient').css('background', '-moz-linear-gradient' + gradientCss);
+    $('#legendGradient').css('background', '-o-linear-gradient' + gradientCss);
+    $('#legendGradient').css('background', 'linear-gradient' + gradientCss);
+}
+
+function setLegendLabels() {
+    console.log('here')
+    var maxIntensity = heatmap['gm_bindings_']['maxIntensity'][117]['Mc']['b'];
+    var legendWidth = $('#legendGradient').outerWidth();
+
+    var slice = maxIntensity / 5;
+
+    $('#legend :not(#legendGradient)').remove();
+
+    for (var i = 0; i <= maxIntensity; i += slice) {
+        console.log(i)
+        var offset = i * legendWidth / maxIntensity;
+        if (i > 0 && i < maxIntensity) {
+            offset -= 0.5;
+        } else if (i == maxIntensity) {
+            offset -= 1;
+        }
+
+        $('#legend').append($('<div>').css({
+            'position': 'absolute',
+            'left': offset + 'px',
+            'top': '30%',
+            'width': '1px',
+            'height': '3px',
+            'background': 'black'
+        }));
+        $('#legend').append($('<div>').css({
+            'position': 'absolute',
+            'left': (offset - 5) + 'px',
+            'top': '35%',
+            'width': '10px',
+            'text-align': 'center',
+            'font-size': '0.8em',
+        }).html(i.toFixed(1)));
+
+    }
+}
+
+
 function initMap() {
   var map = new google.maps.Map(
       document.getElementById('map'),
@@ -138,8 +212,9 @@ function initMap() {
   heatmap = new google.maps.visualization.HeatmapLayer(
       { radius: heatmapRadius,
            map: map });
+  setGradient();
+  setLegendGradient();
   function parse(data, arr) {
-    data = JSON.parse(data);
     for (var i in data) {
       var chunk = new google.maps.LatLng(data[i][0],data[i][1]);
       chunk.references = data[i][2];

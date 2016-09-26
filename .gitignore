@@ -1,4 +1,5 @@
 *.csv
 *.json
 *.docx
+sample.txt
 __pycache__
